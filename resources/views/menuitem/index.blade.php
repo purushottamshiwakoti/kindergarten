@@ -6,25 +6,31 @@
             <p>{{ $message }}</p>
         </div>
     @endif
+    {{-- @php
+        $menuId = $menuItem->first();
+    @endphp --}}
+
     {{-- @dd($menuItem)menuItem --}}
-
+    {{-- <form action="{{ route('menuitem.store', $menuId->menu_id) }}" method="post"> --}}
+    {{-- @csrf --}}
     <a href="{{ route('menuitem.create', $menu->id) }}"><button class="btn btn-success">New Menu Items</button></a>
-    <div class="sortablebody">
-        @foreach ($menuItem as $menu)
-            <div class="card my-3">
-                <div id="{{ $menu->sort_by }}" class="card-body d-flex justify-content-between menu-item">
-                    {{ $menu->title }}
-                    <div>
-                        <a href="{{ route('menuitem.edit', $menu->id) }}"><button
-                                class="btn btn-success">Edit</button></a>
-                        <a href="{{ route('menuitem.destroy', $menu->id) }}">
-                            <button class="btn btn-danger">Delete</button>
-                        </a>
-                    </div>
+    <form action="">
+        <div class="sortablebody" id="sortContainer">
+            @foreach ($menuItem as $menu)
+                <div class="card my-3">
+                    <div id="{{ $menu->sort_by }}" class="card-body d-flex justify-content-between menu-item">
+                        {{ $menu->title }}
+                        <div>
+                            <a href="{{ route('menuitem.edit', $menu->id) }}"><button
+                                    class="btn btn-success">Edit</button></a>
+                            <a href="{{ route('menuitem.destroy', $menu->id) }}">
+                                <button class="btn btn-danger">Delete</button>
+                            </a>
+                        </div>
 
+                    </div>
                 </div>
-            </div>
-            {{-- @if ($menu->children->isNotEmpty())
+                {{-- @if ($menu->children->isNotEmpty())
                 @foreach ($menu->children as $child)
                     <div class="card mx-3 my-3">
                         <div class="card-body d-flex justify-content-between">
@@ -58,8 +64,12 @@
                     @endif
                 @endforeach
             @endif --}}
-        @endforeach
-    </div>
+            @endforeach
+
+        </div>
+    </form>
+    {{-- </form> --}}
+
 </div>
 <script>
     $(document).ready(function() {
@@ -68,8 +78,37 @@
             swap: true,
             swapClass: 'highlight',
             animation: 150,
+            sort: true
         });
 
     })
-    
+
+
+    // var sortContainer = document.getElementById('sortContainer');
+    // new Sortable(sortContainer, {
+    //     onSort: function(evt) {
+    //         var sortedItems = Array.from(sortContainer.getElementsByClassName('sortItem')).map(function(
+    //             element) {
+    //             return element.innerText; // you can get value from html here
+    //         });
+
+
+
+    //         $.ajax({
+
+    //             url: '{{ route('menuitem.updateorder') }}', // use your custom route name instead of url
+    //             method: 'POST',
+    //             data: {
+    //                 _token: '{{ csrf_token() }}',
+    //                 menu_items: data
+    //             },
+    //             success: function(response) {
+    //                 console.log(response);
+    //             },
+    //             error: function(xhr, status, error) {
+    //                 console.log(xhr.responseText);
+    //             }
+    //         });
+    //     }
+    // });
 </script>

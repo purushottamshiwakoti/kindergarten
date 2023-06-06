@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('menu_items', function (Blueprint $table) {
-            // $table->string('sort_by')->after('parent_id')->nullable();
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreignId('role_id')->nullable()->after('id');
         });
     }
 
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('menu_items', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             //
         });
     }

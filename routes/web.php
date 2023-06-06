@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AboutTheAppController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
@@ -17,7 +18,9 @@ use App\Http\Controllers\HomePageSettingController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MenuItemController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PhotoTextBannerController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ServiceDetailController;
 use App\Http\Controllers\ServicePageController;
@@ -66,10 +69,11 @@ Route::group(
 
 Route::get("/menu/items/{id}", [MenuItemController::class, 'index'])->name('menuitem');
 Route::get("/menu/items/create/{id}", [MenuItemController::class, 'create'])->name('menuitem.create');
-Route::any("/menu/items/store/{id}", [MenuItemController::class, 'store'])->name('menuitem.store');
+Route::post("/menu/items/store/", [MenuItemController::class, 'store'])->name('menuitem.store');
 Route::get("/menu/items/edit/{id}", [MenuItemController::class, 'edit'])->name('menuitem.edit');
-Route::any("/menu/items/update/{id}", [MenuItemController::class, 'update'])->name('menuitem.update');
-Route::any("/menu/items/destroy/{id}", [MenuItemController::class, 'destroy'])->name('menuitem.destroy');
+Route::post("/menu/items/update/{id}", [MenuItemController::class, 'update'])->name('menuitem.update');
+Route::post("/menu/items/update-order", [MenuItemController::class, 'updateOrder'])->name('menuitem.updateorder');
+Route::get("/menu/items/destroy/{id}", [MenuItemController::class, 'destroy'])->name('menuitem.destroy');
 
 /// webpage
 Route::get("/", [HomePageController::class, 'index'])->name('home');
@@ -270,3 +274,22 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'servicespage'], function ()
 
 
 Route::get("headermenu/index", [HeaderMenuItemController::class, 'index'])->name('headermenu');
+
+
+Route::group(['middleware' => ['auth'], 'prefix' => 'adminpermession'], function () {
+    Route::get('/home', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/create', [AdminController::class, 'create'])->name('admin.create');
+    Route::post('/store', [AdminController::class, 'store'])->name('admin.store');
+});
+
+Route::group(['middleware' => ['auth'], 'prefix' => 'roles'], function () {
+    Route::get('/home', [RoleController::class, 'index'])->name('role.index');
+    Route::get('/create', [RoleController::class, 'create'])->name('role.create');
+    Route::post('/store', [RoleController::class, 'store'])->name('role.store');
+});
+Route::group(['middleware' => ['auth'], 'prefix' => 'permission'], function () {
+    Route::get('/home', [PermissionController::class, 'index'])->name('permission.index');
+    Route::get('/create', [PermissionController::class, 'create'])->name('permission.create');
+    Route::post('/store', [PermissionController::class, 'store'])->name('permission.store');
+    Route::get('/destroy/{id}', [PermissionController::class, 'destroy'])->name('permission.destroy');
+});

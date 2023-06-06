@@ -22,9 +22,11 @@ class MenuItemController extends Controller
         $menuItem = MenuItem::where('menu_id', $id)->get();
         return view("menuitem.create", compact('menu', 'menuItem'));
     }
-    public function store(StoreMenuItemRequest $request, $id)
+    // public function store(StoreMenuItemRequest $request, $id)
+    public function store(Request $request, $id)
     {
-        $request->validated();
+
+        // $request->validated();
         $menuitem = new MenuItem;
         $menuitem->menu_id = $id;
         $menuitem->fill($request->input());
@@ -55,5 +57,11 @@ class MenuItemController extends Controller
         $menuItem = MenuItem::find($id);
         $menuItem->delete();
         return redirect()->route("menuitem", $menuItem->menu_id)->with("success", 'Sucessfully deleted menu items');
+    }
+
+    public function updateOrder(Request $request)
+    {
+        // $menuItems=
+        dd($request->all());
     }
 }
