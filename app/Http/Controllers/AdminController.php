@@ -27,7 +27,7 @@ class AdminController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
         $user = new User;
         // $password = $request->input('password');
         // $user->name = $request->input('name');
@@ -39,8 +39,15 @@ class AdminController extends Controller
         $permission = new PermissionRole;
         // $getPermission = $request->input('permission_id');
 
-        $permission->role_id = $request->input('role_id');
-        dd($permission);
+        $roleId = $request->input('role_id');
+        $permissionIds = $request->input('permission_id');
+        if (count($permissionIds) > 1) {
+            foreach ($permissionIds as $permissionId) {
+                dd($permissionId);
+            }
+        } else {
+            dd($permissionIds);
+        }
 
         $permission->save();
     }
