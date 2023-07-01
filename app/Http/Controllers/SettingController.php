@@ -33,24 +33,26 @@ class SettingController extends Controller
         // exit;
 
         // about app card section
-        $aboutAppCard = $request->all('aboutappcard');
+        // $aboutAppCard = $request->input('aboutappcard');
         // dd($aboutAppCard);
 
 
         // dd($aboutAppCard);
+        // dd($input['aboutappcard']);
         $addAppCardData = [];
         if (!empty($input['aboutappcard'])) {
-
-            $appCard = $aboutAppCard['aboutappcard'];
+            // dd($input['aboutappcard']);
+            $appCard = $input['aboutappcard'];
             foreach ($appCard as $index => $card) {
+
                 $aboutAppTitle = $card['title'];
-                if (empty($card['image'])) {
+                if (isset($card['image'])) {
                     $aboutAppImage = $card['image'];
                     $filename = time() . "AboutAppIcon$index." . $aboutAppImage->getClientOriginalExtension();
                     $imageurl = Storage::putFileAs("AboutAppIcon", $aboutAppImage, $filename);
                     $imagepath = asset("storage/$imageurl");
                 } else {
-                    $imagepath = $card['image'];
+                    $imagepath = $card['images'];
                 }
 
 
@@ -69,7 +71,7 @@ class SettingController extends Controller
         // / arcodian section
         // $arcodian = $request->get('arcodian');
         $arcodianData = [];
-
+        // dd($input['arcodian']);
         if (!empty($input['arcodian'])) {
             foreach ($input['arcodian'] as $acc) {
                 $arcodianTitle = $acc['title'];
@@ -81,7 +83,8 @@ class SettingController extends Controller
             }
             // $arcodianDataJson = json_encode($arcodianData);
         }
-        $input['arcodian'] = json_encode($arcodianData);
+        $input['photo_text_banner_accordion'] = json_encode($arcodianData);
+        // dd($input['arcodian']);
 
         /// our team section
         // $ourTeam = $request->all('ourteam');

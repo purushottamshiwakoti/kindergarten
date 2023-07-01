@@ -10,6 +10,8 @@ use App\Settings\HomePageSettings;
 use Illuminate\View\View;
 use phpDocumentor\Reflection\Types\Void_;
 
+use function PHPUnit\Framework\isEmpty;
+
 class MasterComposer
 {
     public function __construct()
@@ -20,8 +22,13 @@ class MasterComposer
     {
         $headersettings = app(HeaderSeetings::class);
         $contactSettings = app(ContactSettings::class);
+
         $menu = Menu::where('slug', 'header')->first();
-        $category = MenuItem::tree()->where('menu_id', $menu->id);
+        if (isEmpty($menu)) {
+            $category = MenuItem::tree()->where('menu_id', $menu->id);
+        } else {
+            $category = null;
+        }
 
         $view->with(
             [

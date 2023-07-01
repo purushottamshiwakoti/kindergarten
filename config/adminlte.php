@@ -465,7 +465,10 @@ return [
                 [
                     'text' => 'Menu Builder Page',
                     'url' => '/menu',
-
+                ],
+                [
+                    'text' => 'User Detail Page',
+                    'url' => '/adminpermession/home',
                 ],
 
 

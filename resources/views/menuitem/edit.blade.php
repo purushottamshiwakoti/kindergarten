@@ -40,10 +40,10 @@
 
         {{-- @dd($menuItem->parent_id) --}}
         <div class="mb-3">
-            <label for="" class="form_label">Sort By</label>
+            <label for="" class="form_label">Sort Order</label>
             <br>
-            <input type="text" name="sort_by"
-                value="@if (isset($menuItem->sort_by)) {{ $menuItem->sort_by }}@else'' @endif">
+            <input type="text" name="sort_order"
+                value="@if (isset($menuItem->sort_order)) {{ $menuItem->sort_order }}@else'' @endif">
         </div>
 
 

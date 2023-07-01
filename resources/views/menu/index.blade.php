@@ -21,18 +21,24 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($menu as $menu)
-                    <tr>
-                        <td>{{ $menu->title }}</td>
-                        <td>
-                            <a href="{{ route('menuitem', $menu->id) }}"><button class="btn btn-info">Builder</button></a>
-                            <a href="{{ route('menu.edit', $menu->id) }}"><button
-                                    class="btn btn-success">Edit</button></a>
-                            <a href="{{ route('menu.destroy', $menu->id) }}"><button
-                                    class="btn btn-danger">Delete</button></a>
-                        </td>
-                    </tr>
-                @endforeach
+                @if (count($menu) > 0)
+                    @foreach ($menu as $menus)
+                        <tr>
+                            <td>{{ $menus->title }}</td>
+                            <td>
+                                <a href="{{ route('menuitem', $menus->slug) }}"><button
+                                        class="btn btn-info">Builder</button></a>
+                                <a href="{{ route('menu.edit', $menus->id) }}"><button
+                                        class="btn btn-success">Edit</button></a>
+                                <a href="{{ route('menu.destroy', $menus->id) }}"><button
+                                        class="btn btn-danger">Delete</button></a>
+                            </td>
+                        </tr>
+                    @endforeach
+                @else
+                    <p class="text-danger">No records found in our database!</p>
+
+                @endif
 
             </tbody>
         </table>

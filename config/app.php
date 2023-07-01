@@ -170,6 +170,9 @@ return [
         App\Providers\RouteServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
+
+
 
     ])->toArray(),
 

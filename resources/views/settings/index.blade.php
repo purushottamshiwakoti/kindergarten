@@ -81,8 +81,12 @@
                     </span>
                 @endif
                 <div class="mt-2">
-                    <img src="{{ $photo_text_banner_image }}" style="width: 50px; height:50px, object-fit: cover;"
-                        alt="">
+                    @if (!empty($photo_text_banner_image))
+                        <img src="{{ $photo_text_banner_image }}" alt="img"
+                            style="width: 50px; height:50px, object-fit: cover;" alt="">
+                    @else
+                        <div>No image found in our records</div>
+                    @endif
                 </div>
             </div>
             <div class="mb-3">
@@ -94,29 +98,33 @@
 
 
             <div>
-                @foreach ($arcodian as $index => $arcodianData)
-                    @php
-                        $input = $index + 1;
-                    @endphp
-                    <div id="arcodianData">
-                        <input class="form-control w-50 mt-3" name="{{ "arcodian[$input][title]" }}" type="text"
-                            value="{{ $arcodianData->title }}">
+                @if (!empty($arcodian))
+                    @foreach ($arcodian as $index => $arcodianData)
+                        @php
+                            $input = $index + 1;
+                        @endphp
+                        <div id="arcodianData">
+                            <input class="form-control w-50 mt-3" name="{{ "arcodian[$input][title]" }}" type="text"
+                                value="{{ $arcodianData->title }}">
 
-                        <textarea name="{{ "arcodian[$input][description]" }}" class="form-control w-50 mt-2">
-
+                            <textarea name="{{ "arcodian[$input][description]" }}" class="form-control w-50 mt-2">
 @if (Str::length($arcodianData->description > 70))
 {{ Str::substr($arcodianData->description, 0, 70) . '...' }}
 @else
 {{ $arcodianData->description }}
 @endif
 </textarea>
-                        <div class="my-2">
+                            <div class="my-2">
 
-                            <input type="button" class="deletearcodian btn btn-danger" class="btn btn-danger"
-                                value="Delete">
+                                <input type="button" class="deletearcodian btn btn-danger" class="btn btn-danger"
+                                    value="Delete">
+                            </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                @else
+                    <div class="text-danger">No records found in database</div>
+                @endif
+
 
             </div>
 
@@ -173,20 +181,21 @@
                     </span>
                 @endif
             </div>
-            @if (!is_null($aboutAppCard))
+            {{-- @dd($aboutAppCard) --}}
+            @if (!empty($aboutAppCard))
                 @foreach ($aboutAppCard as $index => $card)
                     @php
                         $input = $index + 1;
                     @endphp
-                    <div class="mb-2">
+                    <div class="mb-2 aboutappcardsec">
                         <img src="{{ $card['image'] }}" name="{{ "aboutappcard[$input][image]" }}"
                             style="width: 20px; height:20px, object-fit: cover;" alt="" srcset="">
                         <input class="ms-2" type="text" name="{{ "aboutappcard[$input][title]" }}"
                             value="{{ $card['title'] }}" />
-                        <input name="{{ "aboutappcard[$input][image]" }}" type="text" hidden
+                        <input name="{{ "aboutappcard[$input][images]" }}" type="text" hidden
                             value="{{ $card['image'] }}" />
 
-                        <input type="button" class="btn btn-danger" value="Delete">
+                        <input type="button " id="removeaboutappcard" class="btn btn-danger " value="Delete">
 
 
 
@@ -467,33 +476,36 @@
             </div>
             <div>
                 {{-- @dd($team) --}}
-                @foreach ($team as $index => $ourTeam)
-                    <div class="removeourteam">
-                        @php
-                            $input = $index + 1;
-                        @endphp
-                        {{-- <img name="{{ "ourteam[$input][image]" }}" src="{{ $ourTeam->image }}" alt=""
-                            style="width: 30px;height:30px;object-fit:cover"> --}}
+                @if (!empty($team))
+                    @foreach ($team as $index => $ourTeam)
+                        <div class="removeourteam">
+                            @php
+                                $input = $index + 1;
+                            @endphp
+                            {{-- <img name="{{ "ourteam[$input][image]" }}" src="{{ $ourTeam->image }}" alt=""
+                        style="width: 30px;height:30px;object-fit:cover"> --}}
 
 
 
-                        <img src="{{ $ourTeam->image }}" alt=""
-                            style="width: 30px;height:30px;object-fit:cover">
+                            <img src="{{ $ourTeam->image }}" alt=""
+                                style="width: 30px;height:30px;object-fit:cover">
 
-                        {{-- <input type="text" name="{{ "ourteam[$input][image]" }}" value="{{ $ourTeam->image }}"
-                            hidden> --}}
+                            {{-- <input type="text" name="{{ "ourteam[$input][image]" }}" value="{{ $ourTeam->image }}"
+                        hidden> --}}
 
-                        <input type="text" name="{{ "ourteam[$input][images]" }}" value="{{ $ourTeam->image }}"
-                            hidden>
-                        <input name="{{ "ourteam[$input][name]" }}" type="text" value="{{ $ourTeam->name }}">
-                        <input type="text" name="{{ "ourteam[$input][position]" }}"
-                            value="{{ $ourTeam->position }}">
-                        <input type="text" name="{{ "ourteam[$input][experiance]" }}"
-                            value="@if (Str::length($ourTeam->experiance) > 20) {{ Str::substr($ourTeam->experiance, 0, 20) . '...' }} @endif">
+                            <input type="text" name="{{ "ourteam[$input][images]" }}" value="{{ $ourTeam->image }}"
+                                hidden>
+                            <input name="{{ "ourteam[$input][name]" }}" type="text" value="{{ $ourTeam->name }}">
+                            <input type="text" name="{{ "ourteam[$input][position]" }}"
+                                value="{{ $ourTeam->position }}">
+                            <input type="text" name="{{ "ourteam[$input][experiance]" }}"
+                                value="@if (Str::length($ourTeam->experiance) > 20) {{ Str::substr($ourTeam->experiance, 0, 20) . '...' }} @endif">
 
-                        <input type="button" class="btn btn-danger my-2 removeteam" value="Delete">
-                    </div>
-                @endforeach
+                            <input type="button" class="btn btn-danger my-2 removeteam" value="Delete">
+                        </div>
+                    @endforeach
+                @endif
+
             </div>
             <div class="ourteamsection">
 
@@ -596,13 +608,13 @@
 
     </div>
     @php
-        $arcodianValue = count($arcodian);
+        $arcodianValue = !is_null($arcodian) ? count($arcodian) : 0;
         // $aboutappValue = count($aboutAppCard);
         $kidoromacardValue = !is_null($kidoromacard) ? count($kidoromacard) : 0;
-        $ourteamValue = count($team);
+        $ourteamValue = !is_null($team) ? count($team) : 0;
         
         // $arcodianValue = 0;
-        $aboutappValue = 0;
+        $aboutappValue = !is_null($aboutAppCard) ? count($aboutAppCard) : 0;
         // $kidoromacardValue = 0;
         // $ourteamValue = 0;
     @endphp
@@ -670,6 +682,14 @@
                 $(this).closest('.removeourteam').remove();
 
             })
+            $(document).on('click', '#removeaboutappcard', function(e) {
+                e.preventDefault();
+                // alert('click');
+                $(this).closest('.aboutappcardsec').remove();
+
+            })
+
+
 
 
             //// kidoroma image
@@ -704,7 +724,7 @@
                             <span class="text-danger me-1">*</span>
                             </label>
                         <div>
-                            <input
+                            <input accept="image/*"
                         name="whykidoroma[` +
                     count +
                     `][image]"
@@ -715,6 +735,7 @@
                             </label>
                         <div>
                             <input
+                            accept="image/*"
                         name="whykidoroma[` +
                     count +
                     `][image1]"
@@ -773,7 +794,7 @@
                         <label class='form-label mx-2'>Description
                             <span class="text-danger me-1">*</span>
                             </label>
-                        <textarea name="arcodian[` + arcodian + `][description]"  style="width:32%"></textarea>
+                        <textarea name="arcodian[` + arcodian + `][description]"></textarea>
                         <button class=" ms-2 btn btn-danger removearcodian" >Remove</button>
                         </div>
                     `

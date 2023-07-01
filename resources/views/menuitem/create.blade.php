@@ -2,12 +2,11 @@
 
 
 <div class="container mt-3">
-    {{-- @dd($menu->id) --}}
-    {{-- @dd($sortByValue) --}}
+
 
 
     <h5>Create Menu Items</h5>
-    <form action="{{ route('menuitem.store', $menu->id) }}" method="post">
+    <form action="{{ route('menuitem.store', $slugs) }}" method="post">
         {{-- <form> --}}
         @csrf
         <div class="mb-3">
@@ -40,7 +39,7 @@
         <div class="mb-3">
             <label for="" class="form_label">Sort By</label>
             <br>
-            <input type="text" name="sort_by">
+            <input type="text" name="sort_order">
         </div>
 
 

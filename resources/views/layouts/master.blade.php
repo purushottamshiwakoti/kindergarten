@@ -77,86 +77,68 @@
             <div class="col-lg-10 col-7 menu-content-wrapper">
                 <nav class="h-100 d-flex align-items-center justify-content-between">
                     <ul class="menu h-100">
-                        @foreach ($category as $categories)
-                            <i class="fal fa-times d-lg-none" id="menuClose"></i>
-                            @if ($categories->children->isNotEmpty())
-                                <li class="nav-item active ">
-                                    <a href="{{ $categories->url }}"
-                                        class="d-flex align-items-center justify-content-between">
-                                        {{ $categories->title }}
-                                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor"
-                                            stroke-width="2" fill="none" stroke-linecap="round"
-                                            stroke-linejoin="round" class="css-i6dzq1">
-                                            <polyline points="6 9 12 15 18 9"></polyline>
-                                        </svg>
-                                    </a>
-                                    <ul class="submenu">
-                                        @foreach ($categories->children as $child)
-                                            <li class="submenu-item">
-                                                @if ($child->children->isNotEmpty())
-                                                    <a class="d-flex align-items-center justify-content-between">
-                                                        {{ $child->title }}
-
-                                                        <svg viewBox="0 0 24 24" width="20" height="20"
-                                                            stroke="currentColor" stroke-width="2" fill="none"
-                                                            stroke-linecap="round" stroke-linejoin="round"
-                                                            class="right-arrow">
-                                                            <polyline points="9 18 15 12 9 6"></polyline>
-                                                        </svg>
-
-                                                    </a>
-                                                @else
-                                                    <a href="{{ $child->url }}"
-                                                        class="d-flex align-items-center justify-content-between">
-                                                        {{ $child->title }}
-                                                    </a>
-                                                @endif
-
-
-
-                                                {{-- <a href="{{ $child->url }}"
-                                                    class="d-flex align-items-center justify-content-between">
-                                                    {{ $child->title }}
-                                                    @if ($child->children->isNotEmpty())
-                                                        <svg viewBox="0 0 24 24" width="20" height="20"
-                                                            stroke="currentColor" stroke-width="2" fill="none"
-                                                            stroke-linecap="round" stroke-linejoin="round"
-                                                            class="right-arrow">
-                                                            <polyline points="9 18 15 12 9 6"></polyline>
-                                                        </svg>
-                                                    @endif
-                                                </a> --}}
-                                                <ul class="submenu1">
-                                                    @if ($child->children->isNotEmpty())
-                                                        @foreach ($child->children as $menu)
-                                                            <li><a href="{{ $menu->url }}">{{ $menu->title }}</a>
-                                                            </li>
-                                                        @endforeach
-                                                    @endif
-
-                                                </ul>
-                                            </li>
-                                        @endforeach
-
-                                    </ul>
-
-                                </li>
-                            @endif
-                            @if ($categories->children->isEmpty())
-                                <li class="nav-item ">
-                                    <a href="{{ $categories->url }}">{{ $categories->title }}</a>
-                                </li>
-                            @endif
-                        @endforeach
+                        @php
+                            function recursiveBuild($category, $counter = 0)
+                            {
+                                $html = '';
+                                foreach ($category as $categories) {
+                                    $html .= '<i class="fal fa-times d-lg-none" id="menuClose"></i>';
+                            
+                                    if ($categories->children->isNotEmpty()) {
+                                        if ($counter === 0) {
+                                            $html .= '<li class="nav-item active submenu-item">';
+                                            $html .= '<a class="d-flex align-items-center justify-content-between" href="' . $categories->url . '">';
+                                            $html .= $categories->title;
+                            
+                                            $html .= '<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1">';
+                                            $html .= '<polyline points="6 9 12 15 18 9"></polyline>';
+                                            $html .= '</svg>';
+                                            $html .= '</a>';
+                                            $html .= '<ul class="submenu">';
+                                            $html .= recursiveBuild($categories->children, $counter + 1);
+                                            $html .= '</ul>';
+                                            $html .= '</li>';
+                                        } else {
+                                            $html .= '<li class="submenu-item">';
+                                            $html .= '<a  class="d-flex align-items-center justify-content-between" href="' . $categories->url . '" >';
+                                            $html .= $categories->title;
+                                            $html .= ' <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="right-arrow">';
+                                            $html .= '<polyline points="9 18 15 12 9 6"></polyline>';
+                                            $html .= '</svg>';
+                                            $html .= '</a>';
+                                            $html .= '<ul class="submenu1">';
+                                            $html .= recursiveBuild($categories->children);
+                                            $html .= '</li>';
+                                            $html .= '</ul>';
+                                            $html .= '</li>';
+                                        }
+                                    } else {
+                                        $html .= '<li class="nav-item active">';
+                                        $html .= '<a class="d-flex align-items-center justify-content-between" href="' . $categories->url . '">';
+                                        $html .= $categories->title;
+                                        $html .= '</a>';
+                                        $html .= '</li>';
+                                    }
+                                }
+                            
+                                return $html;
+                            }
+                            
+                            echo recursiveBuild($category);
+                            
+                        @endphp
                     </ul>
-                    <a href="view-demo" class="btn text-primary btn-transparent btn-custom view-demo"><span>View
-                            Demo</span></a>
+                    <a href="view-demo" class="btn text-primary btn-transparent btn-custom view-demo">
+                        <span>View Demo</span>
+                    </a>
                     <div class="btn-wrapper">
-                        <a href="#" class="btn btn-custom btn-primary"><span>Download our app</span></a>
+                        <a href="#" class="btn btn-custom btn-primary">
+                            <span>Download our app</span>
+                        </a>
                     </div>
                 </nav>
-
             </div>
+
         </div>
     </div>
 </header>

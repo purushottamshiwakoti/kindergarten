@@ -67,9 +67,11 @@ Route::group(
 
 /// menu_items route
 
-Route::get("/menu/items/{id}", [MenuItemController::class, 'index'])->name('menuitem');
-Route::get("/menu/items/create/{id}", [MenuItemController::class, 'create'])->name('menuitem.create');
-Route::post("/menu/items/store/", [MenuItemController::class, 'store'])->name('menuitem.store');
+Route::get("/menu/items/{slug}", [MenuItemController::class, 'index'])->name('menuitem');
+Route::get("/menu/home/{slug}", [MenuItemController::class, 'home'])->name('menuitem.home');
+Route::get("/menu/items/create/{slug}", [MenuItemController::class, 'create'])->name('menuitem.create');
+Route::post("/menu/items/store/{slug}", [MenuItemController::class, 'store'])->name('menuitem.store');
+Route::post("/menu/items/order", [MenuItemController::class, 'order'])->name('menuitem.order');
 Route::get("/menu/items/edit/{id}", [MenuItemController::class, 'edit'])->name('menuitem.edit');
 Route::post("/menu/items/update/{id}", [MenuItemController::class, 'update'])->name('menuitem.update');
 Route::post("/menu/items/update-order", [MenuItemController::class, 'updateOrder'])->name('menuitem.updateorder');
@@ -278,8 +280,12 @@ Route::get("headermenu/index", [HeaderMenuItemController::class, 'index'])->name
 
 Route::group(['middleware' => ['auth'], 'prefix' => 'adminpermession'], function () {
     Route::get('/home', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/view/{id}', [AdminController::class, 'view'])->name('admin.view');
+    Route::get('/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
     Route::get('/create', [AdminController::class, 'create'])->name('admin.create');
+    Route::get('/destroy/{id}', [AdminController::class, 'destroy'])->name('admin.destroy');
     Route::post('/store', [AdminController::class, 'store'])->name('admin.store');
+    Route::post('/update/{id}', [AdminController::class, 'update'])->name('admin.update');
 });
 
 Route::group(['middleware' => ['auth'], 'prefix' => 'roles'], function () {

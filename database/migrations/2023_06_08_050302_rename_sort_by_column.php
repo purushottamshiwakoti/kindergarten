@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('menu_items', function (Blueprint $table) {
-            $table->string('sort_by')->after('parent_id')->nullable();
+            //
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('menu_items', function (Blueprint $table) {
-            //
+            $table->renameColumn('sort_by', 'sort_order');
         });
     }
 };

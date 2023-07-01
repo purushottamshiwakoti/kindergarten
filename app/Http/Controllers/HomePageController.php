@@ -15,8 +15,9 @@ class HomePageController extends Controller
     {
 
         $blogs = Post::orderBy('created_at', 'asc')->get();
-        // $menu = Menu::where('slug', 'header')->first();
+        $menu = Menu::where('slug', 'header')->first();
         // $category = MenuItem::tree()->where('menu_id', $menu->id);
+        // dd($category);
 
 
         return view('homepage.index', $settings->toArray(), compact('blogs'));

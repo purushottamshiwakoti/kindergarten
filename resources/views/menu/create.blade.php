@@ -13,14 +13,14 @@
             @endif
 
         </div>
-        <div class="mb-3">
+        {{-- <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Slug <span style="color:red">*</span></label>
-            <input type="text" class="form-control w-50" name="slug" placeholder="slug">
+            <input type="text" class="form-control w-50" name="slug"  placeholder="slug">
             @if ($errors->has('slug'))
                 <span style="color:red">{{ $errors->first('slug') }}</span>
             @endif
-            
-        </div>
+
+        </div> --}}
         <input type="submit" class="btn btn-success " style="margin-left: 20%">
     </form>
 </div>

@@ -6,109 +6,97 @@
             <p>{{ $message }}</p>
         </div>
     @endif
-    {{-- @php
-        $menuId = $menuItem->first();
-    @endphp --}}
+    <a class="btn btn-success" href="{{ route('menuitem.create', $slug) }}">
+        Create
+    </a>
+    <div class="cf nestable-lists">
+        <div class="dd" id="nestable">
+            @php
 
-    {{-- @dd($menuItem)menuItem --}}
-    {{-- <form action="{{ route('menuitem.store', $menuId->menu_id) }}" method="post"> --}}
-    {{-- @csrf --}}
-    <a href="{{ route('menuitem.create', $menu->id) }}"><button class="btn btn-success">New Menu Items</button></a>
-    <form action="">
-        <div class="sortablebody" id="sortContainer">
-            @foreach ($menuItem as $menu)
-                <div class="card my-3">
-                    <div id="{{ $menu->sort_by }}" class="card-body d-flex justify-content-between menu-item">
-                        {{ $menu->title }}
-                        <div>
-                            <a href="{{ route('menuitem.edit', $menu->id) }}"><button
-                                    class="btn btn-success">Edit</button></a>
-                            <a href="{{ route('menuitem.destroy', $menu->id) }}">
-                                <button class="btn btn-danger">Delete</button>
-                            </a>
-                        </div>
+                if (!function_exists('buildTree')) {
+                    function buildTree($menuItem)
+                    {
+                        $html = recursiveBuild($menuItem);
+                        echo $html;
+                    }
+                    buildTree($menuItem);
+                }
 
-                    </div>
-                </div>
-                {{-- @if ($menu->children->isNotEmpty())
-                @foreach ($menu->children as $child)
-                    <div class="card mx-3 my-3">
-                        <div class="card-body d-flex justify-content-between">
-                            {{ $child->title }}
+                // if (!function_exists('recursiveBuild')) {
+                function recursiveBuild($menuItem)
+                {
+                    $html = '<ol class="dd-list">';
+                    foreach ($menuItem as $key => $root) {
+                        $html .= '<li class="dd-item" data-id="' . $root->id . '">';
+                        $html .= '<div class="d-flex">';
+                        $html .= '<div style="width:30%" class="dd-handle d-flex justify-content-between">' . $root->title;
+                        $html .= '</div>';
+                        $html .= '<div >';
+                        $html .= '<a class="mx-3 " href="/menu/items/edit/' . $root->id . '"><button class=" btn btn-sm  btn-success">Edit</button></a>';
+                        $html .= '<a class="ms-1 " href="/menu/items/destroy/' . $root->id . '"><button class="btn btn-sm  btn-danger">Delete</button></a>';
+                        $html .= '</div>';
+                        $html .= '</div>';
+
+                        if (!$root->children->isEmpty()) {
+                            $html .= recursiveBuild($root->children);
+                        }
+                        $html .= '</li>';
+                    }
+                    $html .= '</ol>';
+                    return $html;
+                }
+                // }
+            @endphp
+            {{-- <ol class="dd-list">
+                @foreach ($menuItem as $menu)
+                    <li class="dd-item" data-id="{{ $menu->id }}">
+                        <div class="dd-handle d-flex justify-content-between">{{ $menu->title }}
                             <div>
-                                <a href="{{ route('menuitem.edit', $child->id) }}"><button
-                                        class="btn btn-success">Edit</button></a>
-                                <a href="{{ route('menuitem.destroy', $child->id) }}">
-                                    <button class="btn btn-danger">Delete</button>
-                                </a>
+                                <a class="me-4 text-success" href="{{ route('menuitem.edit', $menu->id) }}">Edit</a>
+                                <a class="text-danger" href="{{ route('menuitem.destroy', $menu->id) }}">Delete</a>
                             </div>
-
                         </div>
-                    </div>
-                    @if ($child->children->isNotEmpty())
-                        @foreach ($child->children as $subchild)
-                            <div class="card mx-5 my-3">
-                                <div class="card-body d-flex justify-content-between">
-                                    {{ $subchild->title }}
-                                    <div>
-                                        <a href="{{ route('menuitem.edit', $subchild->id) }}"><button
-                                                class="btn btn-success">Edit</button></a>
-                                        <a href="{{ route('menuitem.destroy', $subchild->id) }}">
-                                            <button class="btn btn-danger">Delete</button>
-                                        </a>
-                                    </div>
-
-                                </div>
-                            </div>
-                        @endforeach
-                    @endif
+                    </li>
                 @endforeach
-            @endif --}}
-            @endforeach
-
+            </ol> --}}
         </div>
-    </form>
-    {{-- </form> --}}
-
+    </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-nestable/jquery.nestable.min.js"></script>
+
 <script>
     $(document).ready(function() {
-        const dragArea = document.querySelector('.sortablebody');
-        new Sortable(dragArea, {
-            swap: true,
-            swapClass: 'highlight',
-            animation: 150,
-            sort: true
-        });
+        var updateOutput = function(e) {
+            var list = e.length ? e : $(e.target),
+                output = list.data('output');
+            console.log(list.nestable('serialize'));
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
 
-    })
+            $.ajax({
+                type: "post",
+                url: "{{ route('menuitem.order') }}",
+                data: {
+                    list: JSON.stringify(list.nestable('serialize'))
+                },
+                dataType: "json",
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(xhr, ajaxOptions, error) {
+                    console.log(error);
+                }
+            });
+        };
 
-
-    // var sortContainer = document.getElementById('sortContainer');
-    // new Sortable(sortContainer, {
-    //     onSort: function(evt) {
-    //         var sortedItems = Array.from(sortContainer.getElementsByClassName('sortItem')).map(function(
-    //             element) {
-    //             return element.innerText; // you can get value from html here
-    //         });
-
-
-
-    //         $.ajax({
-
-    //             url: '{{ route('menuitem.updateorder') }}', // use your custom route name instead of url
-    //             method: 'POST',
-    //             data: {
-    //                 _token: '{{ csrf_token() }}',
-    //                 menu_items: data
-    //             },
-    //             success: function(response) {
-    //                 console.log(response);
-    //             },
-    //             error: function(xhr, status, error) {
-    //                 console.log(xhr.responseText);
-    //             }
-    //         });
-    //     }
-    // });
+        $('#nestable').nestable({
+            group: 1,
+            maxDepth: 7,
+        }).on('change', updateOutput);
+    });
 </script>

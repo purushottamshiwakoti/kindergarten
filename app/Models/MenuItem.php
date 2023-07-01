@@ -38,7 +38,7 @@ class MenuItem extends Model
         'url',
         'menu_id',
         'parent_id',
-        'sort_by',
+        'sort_order',
     ];
 
 
@@ -50,8 +50,9 @@ class MenuItem extends Model
 
     public static function tree()
     {
-        // $allCategory = MenuItem::orderBy('id', 'ASC')->get();
-        $allCategory = MenuItem::orderBy('sort_by', 'ASC')->get();
+
+        // $allCategory = MenuItem::orderBy('sort_by', 'ASC')->get();
+        $allCategory = MenuItem::orderBy('sort_order')->get();
         $rootCategories = $allCategory->where('parent_id', 0);
         self::formatTree($rootCategories, $allCategory);
         return $rootCategories;

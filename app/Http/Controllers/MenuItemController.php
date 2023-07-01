@@ -9,32 +9,45 @@ use Illuminate\Http\Request;
 
 class MenuItemController extends Controller
 {
-    public function index($id)
+
+    public function home($slug)
     {
-        $menu = Menu::find($id);
-        $menuItem = MenuItem::tree()->where('menu_id', $menu->id);
-        return view('menuitem.index', compact('menu', 'menuItem'));
+        $menu = Menu::where('slug', $slug)->first();
+        $menuItem = MenuItem::tree();
+        
+        return view('menuitem.home', compact('menu', 'menuItem', 'slug'));
     }
 
-    public function create($id)
+    public function index($slug)
     {
-        $menu = Menu::find($id);
-        $menuItem = MenuItem::where('menu_id', $id)->get();
-        return view("menuitem.create", compact('menu', 'menuItem'));
-    }
-    // public function store(StoreMenuItemRequest $request, $id)
-    public function store(Request $request, $id)
-    {
+        $slugs = $slug;
+        $menu = Menu::where('slug', $slug)->first();
+        $menuItem = MenuItem::tree();
 
-        // $request->validated();
+        return view('menuitem.index', compact('menu', 'menuItem', 'slug'));
+    }
+
+    public function create($slug)
+    {
+        $slugs = $slug;
+        $menuItem = MenuItem::get();
+        return view("menuitem.create", compact('menuItem', 'slugs'));
+    }
+    public function store(StoreMenuItemRequest $request, $slug)
+    {
+        $request->validated();
+        // dd($request->all());
+        $menu = Menu::where('slug', $slug)->first();
+
         $menuitem = new MenuItem;
-        $menuitem->menu_id = $id;
-        $menuitem->fill($request->input());
+        $menuitem->fill($request->all());
+        $menuitem->menu_id = $menu->id;
+        if ($request->input('parent_id') != 0) {
+            $menuitem->parent_id = $request->input('parent_id');
+        }
         $menuitem->save();
 
-        // dd("All good");
-
-        return redirect()->route("menuitem", $id)->with("success", 'Sucessfully added menu items');
+        return redirect()->route("menuitem", $slug)->with("success", 'Sucessfully added menu items');
     }
 
     public function edit($id)
@@ -46,7 +59,6 @@ class MenuItemController extends Controller
     }
     public function update(StoreMenuItemRequest $request, $id)
     {
-        // dd($request->all());
         $request->validated();
         $menuItem = MenuItem::find($id);
         $menuItem->update($request->input());
@@ -59,9 +71,35 @@ class MenuItemController extends Controller
         return redirect()->route("menuitem", $menuItem->menu_id)->with("success", 'Sucessfully deleted menu items');
     }
 
-    public function updateOrder(Request $request)
+    public function order(Request $request)
     {
-        // $menuItems=
-        dd($request->all());
+        // dd($request->all());
+        $list = json_decode($request->input('list'));
+
+        // dd($list);
+
+        foreach ($list as $index => $item) {
+            // dd($item);
+            MenuItem::where('id', $item->id)->update(['sort_order' => $index]);
+
+            if (!empty($item->children)) {
+                $this->updateMenuItems($item->children, $item->id);
+            } else {
+                MenuItem::where('id', $item->id)->update(['sort_order' => $index, 'parent_id' => 0]);
+            }
+        }
+
+
+        return response()->json(['success' => 'Successfully received']);
+    }
+    protected function updateMenuItems($children, $parent)
+    {
+        foreach ($children as $index => $child) {
+            // dd($children);
+            MenuItem::where('id', $child->id)->update(['parent_id' => $parent, 'sort_order' => $index]);
+            if (!empty($child->children)) {
+                $this->updateMenuItems($child->children, $child->id);
+            }
+        }
     }
 }

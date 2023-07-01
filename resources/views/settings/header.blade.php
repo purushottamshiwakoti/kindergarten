@@ -1,5 +1,5 @@
 @extends('menu.common')
-
+@section('content')
 <div class="container">
     <div class="container mt-3">
         @if ($message = Session::get('success'))
@@ -51,3 +51,6 @@
             <input type="submit" value="Save info" class="btn btn-success">
         </form>
     </div>
+</div>
+@endsection
+

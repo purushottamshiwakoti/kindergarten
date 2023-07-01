@@ -22,8 +22,8 @@ class StoreMenuRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'=>'required',
-            'slug'=>'required',
+            'title' => 'required',
+            // 'slug'=>'required',
 
         ];
     }

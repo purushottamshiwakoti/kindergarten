@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMenuRequest;
 use App\Models\Menu;
+use Str;
 
 class MenuController extends Controller
 {
@@ -22,7 +23,8 @@ class MenuController extends Controller
     {
         $request->validated();
         $menu = new Menu;
-        $menu->fill($request->all());
+        $menu->fill($request->input());
+        $menu->slug = Str::slug($request->title);
         $menu->save();
 
         return redirect()->route('menu')->with('success', "Sucessfullly added menu ");
